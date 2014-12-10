@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+    <title>GeoLocation Map</title>
+    <link rel="stylesheet" href="css/main.css" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+        <!-- Google Maps and Places API -->
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places,weather&sensor=false"></script>
+        
+        <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        function initGeolocation() {
+            if( navigator.geolocation ){
+                navigator.geolocation.getCurrentPosition( success, fail );
+            } else {
+                alert("Sorry, your browser does not support geolocation services.");
+            }
+        }
+
+        var map;
+        var service;
+
+        function handleSearchResults(results, status){
+            console.log(results);
+            for(var i = 0; i < results.length; i++){
+
+                var marker = new google.maps.Marker({
+                      position: results[i].geometry.location,
+                      map: map,
+                      icon: 'images/coffee.png'
+                });
+            }
+        }
+
+        function performSearch(){
+            var request = {
+                bounds: map.getBounds(),
+                // name: "McDonald's"
+                types: ['cafe']
+            }
+            service.nearbySearch(request, handleSearchResults);
+        }
+
+        function success(position) {
+           // Define the coordinates as a Google Maps currentLocation Object
+           var currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+           // Prepare the map options
+           var mapOptions = {
+                      zoom: 14,
+                      center: currentLocation,
+                      mapTypeControl: false,
+                      navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+                      mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            // Creates the map
+            map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+			
+            // Place the location marker
+            var marker = new google.maps.Marker({
+                      position: currentLocation,
+                      map: map,
+                      title: "Your current location!"
+            });
+
+            // Creates places
+            service = new google.maps.places.PlacesService(map);
+
+            //wait until bounds are initalized before search is performed
+            google.maps.event.addListenerOnce(map, 'bounds_changed', performSearch);
+            
+            $('#refresh').click(performSearch);
+
+            //location indicator
+            var circleOptions ={
+                strokeColor: '#30a8a6',
+                strokeOpacity: 1,
+                strokeWeight: 1,
+                fillColor: "#30a8a6",
+                fillOpacity: 0.3,
+                map: map,
+                center: currentLocation,
+                radius: 800
+            };
+            circle = new google.maps.Circle(circleOptions);
+
+            //traffic
+            var trafficLayer = new google.maps.TrafficLayer();
+            $('#toggle_traffic').click(function (){
+
+                if (trafficLayer.getMap()) {
+                    trafficLayer.setMap(null);
+                } else {
+                    trafficLayer.setMap(map);
+                }
+            });
+
+            //weather
+            var weatherLayer = new google.maps.weather.WeatherLayer({
+                temperatureUnits: google.maps.weather.TemperatureUnit.CELSIUS
+            });
+            var cloudLayer = new google.maps.weather.CloudLayer();
+
+            $('#toggle_weather').click(function() {
+                if (weatherLayer.getMap() || cloudLayer.getMap()) {
+                    weatherLayer.setMap(null);
+                    cloudLayer.setMap(null);
+                } else {
+                    weatherLayer.setMap(map);
+                    cloudLayer.setMap(map);
+                }
+            });
+        }
+
+        function fail(){
+              // Could not obtain location
+        }
+		
+
+    </script>
+    </head>
+
+    <body onload="initGeolocation();">
+        <div class="wrapper">
+            <h1>Coffee Finder</h1>
+            <div id="map_canvas"></div>
+            <div class="buttonBox">
+                <button id="refresh">Refresh</button>
+                <button id="toggle_traffic">Traffic</button>
+                <button id="toggle_weather">Weather</button>
+            </div> <!--button box-->
+        </div> <!--wrapper-->
+    </body>
+</html>
