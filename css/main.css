@@ -12,21 +12,27 @@ body{
 	max-width: 1080px;
 	margin: 10px auto 0;	
 	overflow: hidden;
+	max-width: 1024px;
+	padding: 10px 10px 20px 10px;
 }
 
 .wrapper h1{
-	/*color: #30a8a6;*/
 	color: white;
 	width:; 100%;
 	text-align: center;
 	text-shadow: 2px 2px 5px #666;
+	margin: 10px 0 0 0;
 }
-
+.wrapper p {
+	font-size: 18px;
+	text-align: center;
+	margin: 10px 0px 52px 0px;
+}
 /*map canvas*/
 #map_canvas {
 	width: 70%;
 	height: 500px;
-	border: 1px solid #30a8a6;
+	border: 1px solid rgba(48,168,166,0.8);
 	float: left;
 }
 
@@ -36,11 +42,7 @@ body{
 	float: left;
 	margin-left: 4%;
 	height: 500px;
-	background-color: pink;
 	vertical-align: center;
-/*	-webkit-transform-style: preserve-3d;
-	-moz-transform-style: preserve-3d;
-	transform-style: preserve-3d;*/
 }
 .buttonBox button{
 	width: 100%;
@@ -53,9 +55,6 @@ body{
 	color: #30a8a6;
 	margin: 0 0 20px 0;
 	background-color: rgba(48,168,166,0.3);
-/*	position: relative;
-	top: 0%;
-	transform: translateY(-50%);*/
 }
 .buttonBox button:hover, .buttonBox button:active, .buttonBox button:focus{
 	background-color: rgba(48,168,166,0.6);
